@@ -1,0 +1,85 @@
+name: jq
+target:
+  registry: ocx.sh
+  repository: jq
+
+source:
+  type: github_release
+  owner: jqlang
+  repo: jq
+  # Tags: jq-1.7, jq-1.7.1, jq-1.8.0, jq-1.8.1. Optional third digit (1.7 has
+  # none). Prereleases (jq-1.7rc1) are excluded by skip_prereleases.
+  tag_pattern: "^jq-(?P<version>\\d+\\.\\d+(\\.\\d+)?)$"
+
+# Pass 1 — Linux only. darwin/windows staged below for Pass 2/3.
+assets:
+  # jq ships raw, statically linked binaries (no archive). Anchored to the
+  # modern os-arch names so the legacy jq-linux64 / jq-osx-amd64 / jq-win64.exe
+  # assets and the .tar.gz / .zip source bundles never match.
+  linux/amd64:
+    - "^jq-linux-amd64$"
+  linux/arm64:
+    - "^jq-linux-arm64$"
+  # darwin/amd64:
+  #   - "^jq-macos-amd64$"
+  # darwin/arm64:
+  #   - "^jq-macos-arm64$"
+  # windows/amd64:
+  #   - "^jq-windows-amd64\\.exe$"
+  # Upstream ships no windows/arm64 binary.
+
+asset_type:
+  # Raw binary on every platform — renamed to jq (jq.exe on Windows; .exe is
+  # appended automatically when the downloaded asset carries it).
+  type: binary
+  name: jq
+
+metadata:
+  default: metadata.json
+
+skip_prereleases: true
+cascade: true
+build_timestamp: none
+
+versions:
+  # jq's oldest release carrying the modern os-arch assets is jq-1.7, which the
+  # tag pattern captures as "1.7" (no patch component). A "1.7.0" floor would
+  # exclude it because 1.7 < 1.7.0 under the version ordering, so the floor is
+  # the bare "1.7".
+  min: "1.7"
+  new_per_run: 5
+  poll_interval: "0 */6 * * *"
+
+verify:
+  github_asset_digest: true
+
+concurrency:
+  max_downloads: 8
+  max_bundles: 4
+  max_pushes: 2
+  rate_limit_ms: 100
+  max_retries: 3
+  compression_threads: 0
+
+tests:
+  - name: smoke
+    script: tests/smoke.star
+
+platforms:
+  linux/amd64:
+    runner: ubuntu-latest
+  linux/arm64:
+    runner: ubuntu-24.04-arm
+  # darwin/amd64:
+  #   runner: macos-latest
+  #   prefix: ["arch", "-x86_64"]
+  # darwin/arm64:
+  #   runner: macos-latest
+  #   shell: bash
+  # windows/amd64:
+  #   runner: windows-latest
+  #   shell: pwsh
+
+notify:
+  discord:
+    webhook_secret: OCX_MIRROR_DISCORD_HOOK
