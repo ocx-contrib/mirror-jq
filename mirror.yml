@@ -24,8 +24,8 @@ assets:
   #   - "^jq-macos-amd64$"
   # darwin/arm64:
   #   - "^jq-macos-arm64$"
-  # windows/amd64:
-  #   - "^jq-windows-amd64\\.exe$"
+  windows/amd64:
+    - "^jq-windows-amd64\\.exe$"
   # Upstream ships no windows/arm64 binary.
 
 asset_type:
@@ -76,9 +76,9 @@ platforms:
   # darwin/arm64:
   #   runner: macos-latest
   #   shell: bash
-  # windows/amd64:
-  #   runner: windows-latest
-  #   shell: pwsh
+  windows/amd64:
+    runner: windows-latest
+    shell: pwsh
 
 notify:
   discord:
