@@ -20,10 +20,10 @@ assets:
     - "^jq-linux-amd64$"
   linux/arm64:
     - "^jq-linux-arm64$"
-  # darwin/amd64:
-  #   - "^jq-macos-amd64$"
-  # darwin/arm64:
-  #   - "^jq-macos-arm64$"
+  darwin/amd64:
+    - "^jq-macos-amd64$"
+  darwin/arm64:
+    - "^jq-macos-arm64$"
   windows/amd64:
     - "^jq-windows-amd64\\.exe$"
   # Upstream ships no windows/arm64 binary.
@@ -70,12 +70,11 @@ platforms:
     runner: ubuntu-latest
   linux/arm64:
     runner: ubuntu-24.04-arm
-  # darwin/amd64:
-  #   runner: macos-latest
-  #   prefix: ["arch", "-x86_64"]
-  # darwin/arm64:
-  #   runner: macos-latest
-  #   shell: bash
+  darwin/amd64:
+    runner: macos-14
+  darwin/arm64:
+    runner: macos-14
+    shell: bash
   windows/amd64:
     runner: windows-latest
     shell: pwsh
